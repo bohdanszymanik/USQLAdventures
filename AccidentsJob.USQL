@@ -1,0 +1,81 @@
+@a = 
+EXTRACT 
+    [STATE] string,
+    [ST_CASE] int,
+    [VE_TOTAL] int,
+    [VE_FORMS] int,
+    [PVH_INVL] int,
+    [PEDS] int,
+    [PERNOTMVIT] int,
+    [PERMVIT] int,
+    [PERSONS] int,
+    [COUNTY] int,
+    [CITY] int,
+    [DAY] int,
+    [MONTH] int,
+    [YEAR] int,
+    [DAY_WEEK] int,
+    [HOUR] int,
+    [MINUTE] int,
+    [NHS] int,
+    [RUR_URB] int,
+    [FUNC_SYS] int,
+    [RD_OWNER] int,
+    [ROUTE] int,
+    [TWAY_ID] string,
+    [TWAY_ID2] string,
+    [MILEPT] int,
+    [LATITUDE] decimal,
+    [LONGITUD] decimal,
+    [SP_JUR] int,
+    [HARM_EV] int,
+    [MAN_COLL] int,
+    [RELJCT1] int,
+    [RELJCT2] int,
+    [TYP_INT] int,
+    [WRK_ZONE] int,
+    [REL_ROAD] int,
+    [LGT_COND] int,
+    [WEATHER1] int,
+    [WEATHER2] int,
+    [WEATHER] int,
+    [SCH_BUS] int,
+    [RAIL] string,
+    [NOT_HOUR] int,
+    [NOT_MIN] int,
+    [ARR_HOUR] int,
+    [ARR_MIN] int,
+    [HOSP_HR] int,
+    [HOSP_MN] int,
+    [CF1] int,
+    [CF2] int,
+    [CF3] int,
+    [FATALS] int,
+    [DRUNK_DR] int
+FROM
+    @"adl://bsadl.azuredatalakestore.net/accident.csv"
+USING Extractors.Csv(encoding:Encoding.[ASCII],skipFirstNRows:1,silent:true);
+
+@q =
+    SELECT
+        [PERNOTMVIT] AS CountNonMotorists,
+        [VE_TOTAL] AS CountVehicles,
+        [VE_FORMS] AS CountMovingVehicles,
+        [PVH_INVL] AS CountNonMovingVehicles,
+        [PERSONS] AS CountPeople,
+        [PERMVIT] AS CountPeopleInCars,
+        [HARM_EV] AS FirstHarmfulEvent,
+        [MAN_COLL] AS MannerOfCollision,
+        [WRK_ZONE] AS WorkZone,
+        [LGT_COND] AS LightCondition,
+        [WEATHER] AS Weather,
+        [DRUNK_DR] AS CountDrunkDrivers,
+        [DAY] AS Day,
+        [HOUR] AS Hour,
+        [FATALS] AS CountFatalities
+    FROM @a;
+
+OUTPUT @q
+    TO @"wasb://accidentcontainer@bs1234.blob.core.windows.net/summaryaccidents.csv"
+    USING Outputters.Csv(outputHeader:true);
+
