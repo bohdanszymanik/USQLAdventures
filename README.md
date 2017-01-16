@@ -13,3 +13,5 @@ I noticed that you can also just load up the Accord stats libraries within Azure
 The U-SQL code to generate a filtered slice of the accident data is in AccidentJob.usql.
 
 This writes to Azure blob storage. To get this into Azure ML you want to use the "Import Data" module in the Azure ML workspace as part of a new experiment. Connect that to "Convert to CSV" module, run both, and then right click to bring up the context menu which allows you create an R Jupyter Notebook with that dataset.
+![CSVToRNoteBookExample](/CSVToRNotebook.png)
+Format: ![Alt Text](url)
